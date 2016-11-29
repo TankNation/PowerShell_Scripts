@@ -94,12 +94,12 @@ New-VHD -Dynamic -Path "$vhdDst" -SourceDisk $vhdSrcMount.DiskNumber
 Dismount-VHD $vhdSrcMount.DiskNumber
 Add-VMHardDiskDrive $vmName -ControllerType IDE -ControllerNumber 0 –Path "$vhdDst" -Passthru
 
+#~ Add new VM as Clustered Role
+Add-ClusterVirtualMachineRole -VirtualMachine $vmName -Name "$vmName" 
+
 #~ Open Console of created VM and start if uncommented
 vmconnect localhost $vmName
 #Start-VM –Name $vmName
-
-#~ Add new VM as Clustered Role
-Add-ClusterVirtualMachineRole -VirtualMachine $vmName -Name "$vmName" 
 
 #~ Complete Display
 $wshell = New-Object -ComObject Wscript.Shell
