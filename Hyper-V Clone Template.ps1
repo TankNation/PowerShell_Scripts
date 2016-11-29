@@ -98,6 +98,9 @@ Add-VMHardDiskDrive $vmName -ControllerType IDE -ControllerNumber 0 –Path "$vh
 vmconnect localhost $vmName
 #Start-VM –Name $vmName
 
+#~ Add new VM as Clustered Role
+Add-ClusterVirtualMachineRole -VirtualMachine $vmName -Name "$vmName" 
+
 #~ Complete Display
 $wshell = New-Object -ComObject Wscript.Shell
 $wshell.Popup("Operation Completed",0,"Done",0x1)
