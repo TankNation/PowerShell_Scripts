@@ -9,6 +9,9 @@
 #~ Sourced from - https://iamoffthebus.wordpress.com/2014/02/04/powershell-to-get-remote-websites-ssl-certificate-expiration/
 #~ and modified for Email and cleaner outputs
 #
+#~ Notes:
+#~ Write-Hosts commented out to work in Orchestrator otherwise; "Cannot invoke this function because the current host does not implement it."
+#
 #############################################################################################################################################
 
 #############################################################################################################################################
@@ -49,11 +52,11 @@ $urls = @(
 } #Email Alert Settings and Configuration
 
 function localNoticePass{
-    Write-Host Cert for site $url expires in $certExpiresIn days [on $expiration] -ForegroundColor Green
+#    Write-Host "Cert for site $url expires in $certExpiresIn days [on $expiration]`n" -ForegroundColor Green
 } #PowerShell Notifications on Pass
 
 function localNoticeFail{
-    Write-Host "$body `n`nThreshold is $minimumCertAgeDays days." -ForegroundColor Yellow
+#    Write-Host "$body `n`nThreshold is $minimumCertAgeDays days.`n" -ForegroundColor Yellow
 } #PowerShell Notifications on Fail
 
 #############################################################################################################################################
@@ -64,11 +67,12 @@ function localNoticeFail{
  [Net.ServicePointManager]::ServerCertificateValidationCallback = {$true}
 
 foreach ($url in $urls){
-    Write-Host Checking $url -ForegroundColor Green
+#    Write-Host "Checking $url`n" -ForegroundColor Green
     $req = [Net.HttpWebRequest]::Create($url)
     $req.Timeout = $timeoutMilliseconds
     try {$req.GetResponse() |Out-Null}
-    catch {Write-Host Exception while checking URL $url`: $_ -ForegroundColor Red}
+    catch {#Write-Host "Exception while checking URL $url`: $_" -ForegroundColor Red
+    }
     [datetime]$expiration = $req.ServicePoint.Certificate.GetExpirationDateString()
     [int]$certExpiresIn = ($expiration - $(get-date)).Days
     $certName = $req.ServicePoint.Certificate.GetName()
@@ -78,10 +82,7 @@ foreach ($url in $urls){
     $certEffectiveDate = $req.ServicePoint.Certificate.GetEffectiveDateString()
     $certIssuer = $req.ServicePoint.Certificate.GetIssuerName()
     If ($certExpiresIn -gt $minimumCertAgeDays){localNoticePass}
-    Else {
-        emailNotice
-        localNoticeFail
-    }
+    Else {emailNotice; localNoticeFail}
     Remove-Variable req
     Remove-Variable expiration
     Remove-Variable certExpiresIn
