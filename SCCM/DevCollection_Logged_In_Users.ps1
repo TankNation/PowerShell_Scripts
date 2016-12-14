@@ -14,6 +14,8 @@
 ###~ Assign Variables and Functions #########################################################################################################
 #############################################################################################################################################
 
+Import-Module "\\...\...\AdminConsole\bin\ConfigurationManager\ConfigurationManager.psd1"
+
 #~ Assign Variables
 $cmSite = "xxx:" #SCCM SiteName
 $date = (get-date).ToString("yyyy-MM-dd@HHmm")
@@ -50,7 +52,7 @@ $dcs = Get-Content $inPath
 $dcs | foreach {
     $dcName = $_
     outFile
-    $comps = Get-CMdevice -CollectionName $DCName | Select -ExpandProperty Name
+    $comps = Get-CMdevice -CollectionName $dcName | Select -ExpandProperty Name
     $comps | Foreach {
         $compName = $_
         $userName =  Query User /server:$_
