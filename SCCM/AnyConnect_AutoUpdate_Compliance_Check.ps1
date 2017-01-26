@@ -17,7 +17,7 @@
 $user_Path = "$env:HomeDrive\users"
 $xml_Pref = "preferences.xml"
 $non_Compliant = $false
-$non_Compliant_Text = "<AutoUpdate>false</AutoUpdate>"
+$compliant_Text = "<AutoUpdate>true</AutoUpdate>"
 
 function targetXML{
     $cisco_Path = "$user_Path\$user\AppData\Local\Cisco\Cisco AnyConnect Secure Mobility Client"
@@ -33,8 +33,8 @@ foreach ($user in $users){
     targetXML
     If (Test-Path $xml_Path){
         $get_Content = Get-Content $xml_Path
-        $test_Content = $get_Content | %{$_ -match $non_Compliant_Text}
-        If ($test_Content -contains $non_Compliant_Text){
+        $test_Content = $get_Content | %{$_ -match $compliant_Text}
+        If ($test_Content -notcontains $compliant_Text){
             #~ Flag Non-Compliant
             $non_Compliant = $true
         }
