@@ -18,7 +18,7 @@ $useraffinity = gwmi -Namespace root\ccm\policy\machine -Class ccm_useraffinity
 $local_Admins = net localgroup administrators | where {$_ -AND $_ -notmatch “command completed successfully”} | select -skip 4
 $ok_Admins = @(
 "administrator",
-”Domain\Domain Admins”
+"Domain\Domain Admins"
 )#~ Acceptable Administrators
 $adminusers = $true
 
