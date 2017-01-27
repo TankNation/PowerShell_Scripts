@@ -19,18 +19,18 @@ $computer = $env:computername
 $ok_Admins = @(
 "administrator",
 "Domain\Domain Admins")#~ Acceptable Administrators
-$local_Admins = net localgroup $local_Group | where {$_ -AND $_ -notmatch “command completed successfully”} | select -skip 4 #~ Current Administrators
+$local_Admins = net localgroup $local_Group | where {$_ -AND $_ -notmatch "command completed successfully"} | select -skip 4 #~ Current Administrators
 
 function NonCompliant_No_Admin{
     foreach ($admin in $ok_Admins){
         If (!($local_Admins -contains $admin)){
             $adsi_admin = ($admin -replace "\\", '/')
             Try{
-                Write-Host "Adding $adsi_admin" -ForegroundColor Green
+#                Write-Host "Adding $adsi_admin" -ForegroundColor Green
                 ([ADSI]"WinNT://$computer/$local_Group,group").psbase.Invoke("Add",([ADSI]"WinNT://$adsi_Admin").path)
             }
             Catch{
-                Write-Host "Error Adding $adsi_admin" -ForegroundColor Red
+#                Write-Host "Error Adding $adsi_admin" -ForegroundColor Red
            }
         }
     }
@@ -41,11 +41,11 @@ function NonCompliant_Extra_Admin{
         If (!($ok_Admins -contains $admin)){
             $adsi_extra = ($admin -replace "\\", '/')
             Try{
-                Write-Host "Deleting $adsi_extra" -ForegroundColor Yellow
+#                Write-Host "Deleting $adsi_extra" -ForegroundColor Yellow
                 ([ADSI]"WinNT://$computer/$local_Group,group").psbase.Invoke("Remove",([ADSI]"WinNT://$adsi_extra").path)
             }
             Catch{
-                Write-Host "Error Removing $adsi_admin" -ForegroundColor Red
+#                Write-Host "Error Removing $adsi_admin" -ForegroundColor Red
             }
         }
     }
